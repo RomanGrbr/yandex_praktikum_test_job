@@ -16,7 +16,16 @@ def cache_args(func):
 
 
 # Здесь код декоратора
+    _result = {}
 
+    def run(num):
+        if num in _result:
+            return _result[num]
+        else:
+            _result[num] = func(num)
+            return _result[num]
+
+    return run
 
 @time_check
 @cache_args
