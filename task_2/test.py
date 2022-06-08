@@ -60,6 +60,7 @@ class TestContact:
     def test_attr_name(self):
         user = precode.Contact("Михаил Булгаков", "2-03-27", "15.05.1891", "Россия, Москва, Большая Пироговская, дом 35б, кв. 6")
         author_data = author.vlad.__dict__
+
         for key in author_data.keys():
             assert hasattr(user, key), (
                 f"Error: Проверьте наличие атрибута {key} в классе Contact"
