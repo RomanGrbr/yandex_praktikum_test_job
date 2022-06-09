@@ -1,17 +1,13 @@
 import contextlib
-import importlib
 import io
 
 import pytest
 
-import author
-import precode
 
 # stdout работы файла с кодом студента (все его print()) в виде одной строки
 output = io.StringIO()
 with contextlib.redirect_stdout(output):
-    importlib.reload(precode)
-
+    import precode
 
 # переменная, в которой в виде строки хранится весь код студента.
 with open("precode.py", encoding="utf-8") as task:
@@ -20,7 +16,7 @@ with open("precode.py", encoding="utf-8") as task:
 # stdout работы файла с кодом автора (все его print()) в виде одной строки
 author_output = io.StringIO()
 with contextlib.redirect_stdout(author_output):
-    importlib.reload(author)
+    import author
 
 
 class MsgError:
@@ -38,7 +34,7 @@ class MsgError:
         return f"Добавьте метод `{method_name}()` для класса `{class_name}`"
 
     def dont_create_def(self, def_name):
-        return f"`Функции `{def_name}()` не должно быть"
+        return f"Функции `{def_name}()` не должно быть"
 
 
 @pytest.fixture
@@ -51,15 +47,20 @@ def msg_err():
 
 class TestContact:
 
-    def test_method_show_contact(self, msg_err):
-        assert hasattr(precode.Contact, "show_contact"), msg_err(
-            "add_method", "show_contact", "Contact")
+
+    def test_print_contact(self, msg_err):
         assert not hasattr(precode, "print_contact"), msg_err(
             "dont_create_def", "print_contact")
 
     def test_attr_name(self):
-        user = precode.Contact("Михаил Булгаков", "2-03-27", "15.05.1891", "Россия, Москва, Большая Пироговская, дом 35б, кв. 6")
         author_data = author.vlad.__dict__
+        try:
+            user = precode.Contact("Михаил Булгаков", "2-03-27", "15.05.1891",\
+                "Россия, Москва, Большая Пироговская, дом 35б, кв. 6")
+        except (TypeError, NameError )as e:
+            assert False, (
+                f"{e} Не меняйте метод `__init__()` класса `Contact` "
+            )
 
         for key in author_data.keys():
             assert hasattr(user, key), (
@@ -73,11 +74,11 @@ class TestContact:
             value for value in precode.__dict__ if not value.startswith('__')]
 
         assert len(author_attr) >= len(user_attr), (
-            "Error: Убедитесь, что нет лишних переменных")
+            "Убедитесь, что нет лишних переменных")
         assert len(author_attr) <= len(user_attr), (
-            "Error: Убедитесь, что есть все переменные")
+            "Убедитесь, что есть все переменные")
         assert author_attr == user_attr, (
-            "Error: Убедитесь, что переменные названы верно")
+            "Убедитесь, что переменные названы верно")
 
     def test_response_output(self):
         assert output.getvalue() == author_output.getvalue(), (

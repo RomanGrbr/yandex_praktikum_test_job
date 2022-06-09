@@ -6,6 +6,7 @@ def time_check(func):
         start_time = time.time()
         result = func(*args)
         execution_time = round(time.time() - start_time, 1)
+        # execution_time = time.time() - start_time
         print(f'Время выполнения функции: {execution_time} с.')
         return result
 
@@ -13,7 +14,6 @@ def time_check(func):
 
 
 def cache_args(func):
-
 
 # Здесь код декоратора
     _result = {}
@@ -26,6 +26,13 @@ def cache_args(func):
             return _result[num]
 
     return run
+
+    # Здесь код декоратора
+    # def run(num):
+    #     _result = func(num)
+    #     return _result
+
+    # return run
 
 @time_check
 @cache_args
